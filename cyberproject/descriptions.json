@@ -1,0 +1,11 @@
+{
+  "android.permission.INTERNET": "Allows the app to access the internet.",
+  "android.permission.ACCESS_NETWORK_STATE": "Allows the app to access information about networks.",
+  "android.permission.READ_CONTACTS": "Allows the app to read user contacts.",
+  "android.permission.CAMERA": "Allows the app to access the device's camera.",
+  
+  "com.example.app.MainActivity": "Main entry point of the app.",
+  "com.example.app.service.MyService": "Background service for performing tasks.",
+  "com.example.app.receiver.MyReceiver": "Broadcast receiver for handling events.",
+  "com.example.app.provider.MyProvider": "Content provider for sharing data with other apps."
+}

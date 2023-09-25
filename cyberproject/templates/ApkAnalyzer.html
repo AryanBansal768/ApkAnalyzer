@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APK Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        label {
+            font-size: 18px;
+            color: #333;
+        }
+
+        input[type="file"] {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        h2 {
+            color: #007BFF;
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            font-size: 18px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Progress bar styles */
+        .progress {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 0;
+            height: 20px;
+            background-color: #007BFF;
+            border-radius: 4px;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>APK Analyzer</h1>
+    </header>
+    <div class="container">
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="apkFile">Upload an APK:</label>
+            <input type="file" name="apkFile" accept=".apk" required>
+            <br>
+            <input type="submit" value="Analyze">
+            <!-- Progress bar -->
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar">0%</div>
+            </div>
+        </form>
+        <h2>Analysis Report</h2>
+        <div id="analysis-results">
+            <p>Analysis report will be displayed here.</p>
+        </div>
+        <a href="/download">Download PDF Report</a>
+    </div>
+
+    <!-- Include Bootstrap JS (you may need to download it) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').submit(function(event) {
+                event.preventDefault();  // Prevent the default form submission
+
+                // Create a FormData object and append the file
+                var formData = new FormData($(this)[0]);
+
+                // Show the progress bar
+                $('.progress').css('display', 'block');
+
+                $.ajax({
+                    url: '/upload',  // Your upload route
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+
+                        // Upload progress
+                        xhr.upload.addEventListener('progress', function(e) {
+                            if (e.lengthComputable) {
+                                var percent = (e.loaded / e.total) * 100;
+                                $('#progress-bar').css('width', percent + '%');
+                                $('#progress-bar').text(percent + '%');
+                            }
+                        });
+
+                        return xhr;
+                    },
+                    success: function(response) {
+                        // Hide the progress bar
+                        $('.progress').css('display', 'none');
+
+                        // Display analysis results
+                        $('#analysis-results').html(response);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
